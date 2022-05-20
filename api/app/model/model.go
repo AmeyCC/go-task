@@ -7,18 +7,18 @@ import (
 
 //User data structure
 type User struct {
-	Id       string  `json:"id" binding:"required"`
-	Name     string  `json:"name" binding:"required"`
-	Location float64 `json:"location" binding:"required"`
+	Id       int     `json:"id" validate:"required"`
+	Name     string  `json:"name" validate:"required"`
+	Location float64 `json:"location" validate:"required"`
 	Gender   string  `json:"gender,omitempty"`
 	Email    string  `json:"email,omitempty"`
 }
 
 //Like data structure
 type Like struct {
-	Id           string `json:"id"`
-	Who_likes    int    `json:"who_likes"`
-	Who_is_liked int    `json:"who_is_liked"`
+	Id           int `json:"id"`
+	Who_likes    int `json:"who_likes"`
+	Who_is_liked int `json:"who_is_liked"`
 }
 
 // DBMigrate will create and migrate the tables, and then make the some relationships if necessary

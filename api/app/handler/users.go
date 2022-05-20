@@ -10,9 +10,9 @@ import (
 )
 
 func GetAllUsers(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
-	Users := []model.User{}
-	db.Find(&Users)
-	respondJSON(w, http.StatusOK, Users)
+	users := []model.User{}
+	db.Find(&users)
+	respondJSON(w, http.StatusOK, &users)
 }
 
 func CreateUser(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
@@ -34,18 +34,30 @@ func CreateUser(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
 
 func GetUser(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	id := vars["id"]
-	User := getUserOr404(db, id, w, r)
-	if User == nil {
+	name := vars["name"]
+	user := getUserOr404(db, name, w, r)
+	if user == nil {
 		return
 	}
-	respondJSON(w, http.StatusOK, User)
+	respondJSON(w, http.StatusOK, user)
+
 }
 
 // getUserOr404 gets a User instance if exists, or respond the 404 error otherwise
-func getUserOr404(db *gorm.DB, id string, w http.ResponseWriter, r *http.Request) *model.User {
+/*func getUserOr404(db *gorm.DB, name string, w http.ResponseWriter, r *http.Request) *model.User {
 	User := model.User{}
-	if err := db.First(&User, model.User{Id: id}).Error; err != nil {
+	if err := db.First(&User, model.User{Name: name}).Error; err != nil {
+		respondError(w, http.StatusNotFound, err.Error())
+		return nil
+	}
+	return &User
+}*/
+
+func getUserOr404(db *gorm.DB, name string, w http.ResponseWriter, r *http.Request) *model.User {
+	User := model.User{}
+	vars := mux.Vars(r)
+	in := vars["in"]
+	if err := db.Where("name LIKE ? ", "%"+in+"%").Find(&User, model.User{Name: name}).Error; err != nil {
 		respondError(w, http.StatusNotFound, err.Error())
 		return nil
 	}
