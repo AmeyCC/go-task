@@ -16,7 +16,7 @@ func GetAllUsers(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateUser(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
-	User := []model.User{}
+	User := model.User{}
 
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&User); err != nil {
@@ -34,7 +34,6 @@ func CreateUser(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
 
 func GetUser(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-
 	id := vars["id"]
 	User := getUserOr404(db, id, w, r)
 	if User == nil {
@@ -44,9 +43,9 @@ func GetUser(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
 }
 
 // getUserOr404 gets a User instance if exists, or respond the 404 error otherwise
-func getUserOr404(db *gorm.DB, name string, w http.ResponseWriter, r *http.Request) *model.User {
+func getUserOr404(db *gorm.DB, id string, w http.ResponseWriter, r *http.Request) *model.User {
 	User := model.User{}
-	if err := db.First(&User, model.User{Name: name}).Error; err != nil {
+	if err := db.First(&User, model.User{Id: id}).Error; err != nil {
 		respondError(w, http.StatusNotFound, err.Error())
 		return nil
 	}
