@@ -42,6 +42,8 @@ func (a *App) setRouters() {
 	a.Get("/users", a.GetAllUsers)
 	a.Post("/users", a.CreateUser)
 	a.Get("/users/{title}", a.GetUser)
+	a.Get("/likes", a.GetAllLikes)
+	a.Post("/likes", a.SetLikes)
 
 }
 
@@ -55,8 +57,6 @@ func (a *App) Post(path string, f func(w http.ResponseWriter, r *http.Request)) 
 	a.Router.HandleFunc(path, f).Methods("POST")
 }
 
-// Wrap the router for PUT method
-
 // Handlers to manage User Data
 func (a *App) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	handler.GetAllUsers(a.DB, w, r)
@@ -68,6 +68,12 @@ func (a *App) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 func (a *App) GetUser(w http.ResponseWriter, r *http.Request) {
 	handler.GetUser(a.DB, w, r)
+}
+func (a *App) GetAllLikes(w http.ResponseWriter, r *http.Request) {
+	handler.GetAllLikes(a.DB, w, r)
+}
+func (a *App) SetLikes(w http.ResponseWriter, r *http.Request) {
+	handler.SetLikes(a.DB, w, r)
 }
 
 // Run the app on it's router

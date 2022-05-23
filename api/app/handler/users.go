@@ -42,6 +42,27 @@ func GetUser(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
 	respondJSON(w, http.StatusOK, user)
 
 }
+func GetAllLikes(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
+	likes := []model.Like{}
+	db.Find(&likes)
+	respondJSON(w, http.StatusOK, &likes)
+}
+func SetLikes(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
+	Like := model.Like{}
+
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&Like); err != nil {
+		respondError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	defer r.Body.Close()
+
+	if err := db.Save(&Like).Error; err != nil {
+		respondError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	respondJSON(w, http.StatusCreated, Like)
+}
 
 // getUserOr404 gets a User instance if exists, or respond the 404 error otherwise
 /*func getUserOr404(db *gorm.DB, name string, w http.ResponseWriter, r *http.Request) *model.User {
